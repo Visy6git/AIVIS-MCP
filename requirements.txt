@@ -1,0 +1,10 @@
+ollama
+groq
+streamlit
+dotenv
+torch
+mcp
+langchain_mcp_adapters
+langgraph
+langchain-groq
+pygame
