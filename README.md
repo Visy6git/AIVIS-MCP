@@ -122,22 +122,79 @@ Ollama is required for local LLM inference.
 
 ---
 
-## 8. Setting Up n8n (Node.js Automation)
+## 8. Setting Up n8n Locally & Using the Provided Workflow
 
-1. Install n8n globally:
-    ```sh
-    npm install -g n8n
-    ```
-2. Start n8n:
-    ```sh
-    n8n
-    ```
-3. Access n8n UI at [http://localhost:5678](http://localhost:5678).
-4. Configure a webhook node at `/webhook/invoke_agent` to connect with [`n8n_test.py`](n8n_test.py).
+### Install n8n
+
+1. **Install Node.js & npm**  
+   Download and install Node.js from [https://nodejs.org/](https://nodejs.org/).
+
+2. **Install n8n globally**  
+   ```sh
+   npm install -g n8n
+   ```
+
+3. **Start n8n**  
+   ```sh
+   n8n
+   ```
+   By default, n8n runs at [http://localhost:5678](http://localhost:5678).
 
 ---
 
-## 9. File Overview
+### Import and Configure the Workflow
+
+1. **Open n8n in your browser:**  
+   Go to [http://localhost:5678](http://localhost:5678).
+
+2. **Import the workflow template:**  
+   - Click the menu (top right) → "Import workflow".
+   - Copy the contents of `N8N_workflow_template.json` and paste it into the import dialog.
+   - Click "Import".
+
+3. **Configure Credentials:**
+   - Set up your Ollama and SerpAPI credentials in n8n:
+     - Go to "Credentials" in n8n.
+     - Add your Ollama API and SerpAPI keys.
+     - Make sure the credential names match those referenced in the workflow (`Ollama account`, `SerpAPI account`).
+
+4. **Activate the workflow:**  
+   - Click "Activate" to enable the workflow.
+
+---
+
+### How the Workflow Works
+
+- **Webhook Trigger:**  
+  The workflow listens for POST requests at `/webhook/invoke_agent`.  
+  You can send messages to this endpoint (see `n8n_test.py` for an example).
+
+- **AI Agent Node:**  
+  Handles user queries, uses Ollama for LLM responses, and can access Google search via SerpAPI.
+
+- **Memory & Tools:**  
+  Includes a memory buffer and SerpAPI integration for enhanced responses.
+
+---
+
+### Example: Sending a Message to the Workflow
+
+You can use the provided `n8n_test.py` Streamlit app to interact with the workflow, or send a POST request manually:
+
+```sh
+curl -X POST http://localhost:5678/webhook/invoke_agent \
+  -H "Content-Type: application/json" \
+  -d '{"sessionId": "your-session-id", "chatInput": "What is the weather in Delhi?"}'
+```
+
+---
+
+**Tip:**  
+If you change the workflow, export it from n8n to update your local `N8N_workflow_template.json`.
+
+---
+
+## 10. File Overview
 
 - [`mcp_client.py`](mcp_client.py): Python client for MCP tool servers.
 - [`streamlit_groq.py`](streamlit_groq.py): Streamlit app for Groq LLM chat.
@@ -149,7 +206,7 @@ Ollama is required for local LLM inference.
 
 ---
 
-## 10. Troubleshooting
+## 11. Troubleshooting
 
 - Ensure `.venv` is activated before running Python scripts.
 - Make sure Ollama is running for local LLM inference.
